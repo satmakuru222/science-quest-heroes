@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SciQuest Heroes - Login Flow Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; padding: 40px 20px; }
+        .font-fredoka { font-family: 'Fredoka', sans-serif; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: rgba(255, 255, 255, 0.95); border-radius: 24px; padding: 32px; margin-bottom: 32px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .flow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 32px; }
+        .flow-card { background: rgba(255, 255, 255, 0.95); border-radius: 24px; padding: 32px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .flow-header { text-align: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 3px solid #e2e8f0; }
+        .flow-icon { font-size: 56px; margin-bottom: 12px; }
+        .step { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; border-left: 4px solid #22c55e; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
+        .step-number { position: absolute; top: -10px; left: -10px; width: 32px; height: 32px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #1e293b; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .step-title { font-weight: 800; color: #1e293b; margin-bottom: 8px; font-size: 16px; }
+        .step-desc { color: #64748b; font-weight: 600; font-size: 14px; line-height: 1.6; }
+        .arrow { text-align: center; color: #22c55e; font-size: 32px; margin: 8px 0; }
+        .endpoint { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border-radius: 16px; padding: 20px; text-align: center; font-weight: 800; font-size: 18px; margin-top: 16px; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3); }
+        .note { background: rgba(251, 191, 36, 0.1); border: 2px solid rgba(251, 191, 36, 0.3); border-radius: 12px; padding: 16px; margin-top: 16px; }
+        .note-title { font-weight: 800; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .note-text { color: #64748b; font-weight: 600; font-size: 14px; line-height: 1.6; }
+        .btn-demo { background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 12px; padding: 12px 24px; font-weight: 800; color: #1e293b; text-decoration: none; display: inline-block; margin-top: 16px; transition: transform 0.2s; }
+        .btn-demo:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="font-fredoka text-5xl font-black text-slate-800 mb-4">SciQuest Heroes Authentication Flows</h1>
+            <p class="text-slate-600 text-xl font-bold">Complete visual guide for Student, Parent, and Teacher login journeys</p>
+        </div>
+
+        <div class="flow-grid">
+            <!-- STUDENT FLOW -->
+            <div class="flow-card">
+                <div class="flow-header">
+                    <div class="flow-icon">🎓</div>
+                    <h2 class="font-fredoka text-3xl font-black text-slate-800">Student Flow</h2>
+                    <p class="text-slate-600 font-bold mt-2">Simplified, kid-friendly signup process</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Landing Page</div>
+                    <div class="step-desc">Click "Get Started" or "Sign Up" from index.html</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Account Type Selection</div>
+                    <div class="step-desc">Select "Student" card on account-type-selection.html<br>Stores 'student' in localStorage</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Student-Specific Signup</div>
+                    <div class="step-desc">Redirects to student-signup.html<br>
+                    • Choose username (no email required)<br>
+                    • Set password<br>
+                    • Optional: Parent email for monitoring</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Account Creation</div>
+                    <div class="step-desc">Creates Supabase auth account using generated email (username@sciquestheroes.app)<br>
+                    Creates user_profiles record with account_type='student'</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="endpoint">
+                    <i class="fas fa-rocket mr-2"></i>Student Dashboard
+                </div>
+
+                <div class="note">
+                    <div class="note-title">
+                        <i class="fas fa-info-circle text-yellow-600"></i>
+                        Special Notes
+                    </div>
+                    <div class="note-text">
+                        • No email confirmation required<br>
+                        • Username-based login system<br>
+                        • Parent can link to child account<br>
+                        • Age-appropriate interface
+                    </div>
+                </div>
+
+                <div class="note" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); margin-top: 16px;">
+                    <div class="note-title">
+                        <i class="fas fa-sign-in-alt text-green-600"></i>
+                        Existing User Login
+                    </div>
+                    <div class="note-text">
+                        1. Go to auth.html<br>
+                        2. Enter username (will convert to email)<br>
+                        3. Enter password<br>
+                        4. System checks user_profiles.account_type<br>
+                        5. Redirects to student-dashboard.html
+                    </div>
+                </div>
+
+                <a href="account-type-selection.html" class="btn-demo">
+                    <i class="fas fa-play mr-2"></i>Try Student Flow
+                </a>
+            </div>
+
+            <!-- PARENT FLOW -->
+            <div class="flow-card">
+                <div class="flow-header">
+                    <div class="flow-icon">👨‍👩‍👧</div>
+                    <h2 class="font-fredoka text-3xl font-black text-slate-800">Parent Flow</h2>
+                    <p class="text-slate-600 font-bold mt-2">Standard email/password authentication</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Landing Page</div>
+                    <div class="step-desc">Click "Get Started" or "Sign Up" from index.html</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Account Type Selection</div>
+                    <div class="step-desc">Select "Parent" card on account-type-selection.html<br>Stores 'parent' in localStorage</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Standard Auth Page</div>
+                    <div class="step-desc">Redirects to auth.html?type=parent&mode=signup<br>
+                    • Enter email address<br>
+                    • Set password (min 6 characters)<br>
+                    • Optional: Sign up with Google OAuth</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Account Creation</div>
+                    <div class="step-desc">Creates Supabase auth account<br>
+                    Creates user_profiles record with account_type='parent'<br>
+                    Clears localStorage.accountType</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="endpoint">
+                    <i class="fas fa-home mr-2"></i>Parent Dashboard
+                </div>
+
+                <div class="note">
+                    <div class="note-title">
+                        <i class="fas fa-info-circle text-yellow-600"></i>
+                        Special Features
+                    </div>
+                    <div class="note-text">
+                        • Manage multiple child accounts<br>
+                        • Monitor learning progress<br>
+                        • View detailed reports<br>
+                        • Set parental controls
+                    </div>
+                </div>
+
+                <div class="note" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); margin-top: 16px;">
+                    <div class="note-title">
+                        <i class="fas fa-sign-in-alt text-green-600"></i>
+                        Existing User Login
+                    </div>
+                    <div class="note-text">
+                        1. Go to auth.html<br>
+                        2. Enter email address<br>
+                        3. Enter password<br>
+                        4. System checks user_profiles.account_type<br>
+                        5. Redirects to parent-dashboard.html
+                    </div>
+                </div>
+
+                <a href="account-type-selection.html" class="btn-demo">
+                    <i class="fas fa-play mr-2"></i>Try Parent Flow
+                </a>
+            </div>
+
+            <!-- TEACHER FLOW -->
+            <div class="flow-card">
+                <div class="flow-header">
+                    <div class="flow-icon">👩‍🏫</div>
+                    <h2 class="font-fredoka text-3xl font-black text-slate-800">Teacher Flow</h2>
+                    <p class="text-slate-600 font-bold mt-2">Classroom management and multi-student access</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Landing Page</div>
+                    <div class="step-desc">Click "Get Started" or "Sign Up" from index.html</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Account Type Selection</div>
+                    <div class="step-desc">Select "Teacher" card on account-type-selection.html<br>Stores 'teacher' in localStorage</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Standard Auth Page</div>
+                    <div class="step-desc">Redirects to auth.html?type=teacher&mode=signup<br>
+                    • Enter professional email<br>
+                    • Set password (min 6 characters)<br>
+                    • Optional: Sign up with Google OAuth</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Account Creation</div>
+                    <div class="step-desc">Creates Supabase auth account<br>
+                    Creates user_profiles record with account_type='teacher'<br>
+                    Clears localStorage.accountType</div>
+                </div>
+
+                <div class="arrow"><i class="fas fa-arrow-down"></i></div>
+
+                <div class="endpoint">
+                    <i class="fas fa-chalkboard-teacher mr-2"></i>Teacher Dashboard
+                </div>
+
+                <div class="note">
+                    <div class="note-title">
+                        <i class="fas fa-info-circle text-yellow-600"></i>
+                        Special Features
+                    </div>
+                    <div class="note-text">
+                        • Create and manage classes<br>
+                        • Assign stories to students<br>
+                        • View class analytics<br>
+                        • Generate reports for parents
+                    </div>
+                </div>
+
+                <div class="note" style="background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); margin-top: 16px;">
+                    <div class="note-title">
+                        <i class="fas fa-sign-in-alt text-green-600"></i>
+                        Existing User Login
+                    </div>
+                    <div class="note-text">
+                        1. Go to auth.html<br>
+                        2. Enter email address<br>
+                        3. Enter password<br>
+                        4. System checks user_profiles.account_type<br>
+                        5. Redirects to teacher-dashboard.html
+                    </div>
+                </div>
+
+                <a href="account-type-selection.html" class="btn-demo">
+                    <i class="fas fa-play mr-2"></i>Try Teacher Flow
+                </a>
+            </div>
+        </div>
+
+        <!-- COMMON FEATURES -->
+        <div class="flow-card" style="margin-top: 32px;">
+            <h2 class="font-fredoka text-3xl font-black text-slate-800 mb-6 text-center">
+                <i class="fas fa-lock mr-3 text-purple-600"></i>Common Authentication Features
+            </h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="step">
+                    <div class="step-title"><i class="fas fa-shield-alt text-blue-600 mr-2"></i>Supabase Auth</div>
+                    <div class="step-desc">All accounts use Supabase Authentication for secure, production-ready user management</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title"><i class="fas fa-database text-green-600 mr-2"></i>User Profiles</div>
+                    <div class="step-desc">user_profiles table stores account_type, enabling role-based routing and permissions</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title"><i class="fas fa-key text-yellow-600 mr-2"></i>Password Reset</div>
+                    <div class="step-desc">Forgot password feature available for all account types (except student username-based)</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title"><i class="fab fa-google text-red-600 mr-2"></i>Google OAuth</div>
+                    <div class="step-desc">Quick sign-up/login with Google available for parents and teachers</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title"><i class="fas fa-route text-purple-600 mr-2"></i>Smart Routing</div>
+                    <div class="step-desc">System automatically routes users to correct dashboard based on account_type after login</div>
+                </div>
+
+                <div class="step">
+                    <div class="step-title"><i class="fas fa-lock-open text-pink-600 mr-2"></i>No Email Confirm</div>
+                    <div class="step-desc">Email confirmation is disabled for instant access - users can start immediately</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TECHNICAL DETAILS -->
+        <div class="flow-card" style="margin-top: 32px;">
+            <h2 class="font-fredoka text-3xl font-black text-slate-800 mb-6 text-center">
+                <i class="fas fa-code mr-3 text-blue-600"></i>Technical Implementation
+            </h2>
+
+            <div class="note" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3);">
+                <div class="note-title">
+                    <i class="fas fa-cog text-blue-600"></i>
+                    Key Files
+                </div>
+                <div class="note-text">
+                    <strong>account-type-selection.html</strong> - Initial account type chooser<br>
+                    <strong>auth.html / auth.js</strong> - Main authentication page with sign-in/sign-up toggle<br>
+                    <strong>student-signup.html / student-signup.js</strong> - Student-specific signup flow<br>
+                    <strong>config.js</strong> - Supabase configuration<br>
+                    <strong>user_profiles table</strong> - Stores account_type for routing
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 20px; background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.3);">
+                <div class="note-title">
+                    <i class="fas fa-database text-pink-600"></i>
+                    Database Schema
+                </div>
+                <div class="note-text">
+                    <strong>auth.users</strong> - Supabase managed auth table (email, password)<br>
+                    <strong>user_profiles</strong> - Custom table (id, email, account_type, username, grade, parent_email)<br>
+                    <strong>Row Level Security</strong> - Users can only access their own profile data
+                </div>
+            </div>
+
+            <div class="note" style="margin-top: 20px; background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3);">
+                <div class="note-title">
+                    <i class="fas fa-check-circle text-green-600"></i>
+                    Authentication Flow Logic
+                </div>
+                <div class="note-text">
+                    1. User selects account type → stored in localStorage<br>
+                    2. Redirects to appropriate signup page<br>
+                    3. Creates Supabase auth account (email/password or OAuth)<br>
+                    4. Creates user_profiles record with account_type<br>
+                    5. On login, queries user_profiles to get account_type<br>
+                    6. Redirects to appropriate dashboard based on account_type
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 32px; background: rgba(255, 255, 255, 0.95); border-radius: 24px;">
+            <h3 class="font-fredoka text-2xl font-black text-slate-800 mb-4">Ready to Test?</h3>
+            <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                <a href="account-type-selection.html" class="btn-demo" style="margin: 0;">
+                    <i class="fas fa-user-plus mr-2"></i>Start Signup Flow
+                </a>
+                <a href="auth.html" class="btn-demo" style="margin: 0; background: linear-gradient(135deg, #22c55e, #16a34a);">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Existing User Login
+                </a>
+                <a href="index.html" class="btn-demo" style="margin: 0; background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
