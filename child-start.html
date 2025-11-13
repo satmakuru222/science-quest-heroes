@@ -3,35 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Start - SciQuest Heroes</title>
+    <title>Create Your Adventure - SciQuest Heroes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; }
         .font-fredoka { font-family: 'Fredoka', sans-serif; }
-        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 20px 0; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
-        .page-header { background: rgba(255, 255, 255, 0.95); border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 32px; padding: 48px; margin-bottom: 40px; text-align: center; }
-        .card { background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 32px; }
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 20px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 24px; }
+        .page-header { background: rgba(255, 255, 255, 0.95); border: 3px solid rgba(255, 255, 255, 0.3); border-radius: 32px; padding: 48px; margin-bottom: 40px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
+        .card { background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .form-group { margin-bottom: 24px; }
+        .form-label { display: block; font-weight: 700; color: #1e293b; margin-bottom: 8px; font-size: 16px; }
+        .form-select { width: 100%; padding: 14px 18px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; font-weight: 600; color: #1e293b; background: white; transition: all 0.3s ease; }
+        .form-select:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1); }
+        .btn-generate { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); border-radius: 60px; padding: 18px 48px; font-weight: 800; font-size: 18px; color: #1e293b; box-shadow: 0 8px 0 #92400e, 0 12px 30px rgba(0,0,0,0.3); transition: all 0.2s ease; cursor: pointer; font-family: 'Fredoka', sans-serif; text-transform: uppercase; letter-spacing: 1px; border: none; width: 100%; }
+        .btn-generate:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 11px 0 #92400e, 0 15px 35px rgba(0,0,0,0.4); }
+        .btn-generate:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 6px 0 #92400e, 0 8px 20px rgba(0,0,0,0.3); }
+        .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; }
+        .loading-state { display: none; text-align: center; padding: 40px; }
+        .loading-state.active { display: block; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #e2e8f0; border-top-color: #22c55e; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .helper-text { font-size: 14px; color: #64748b; margin-top: 6px; line-height: 1.5; }
+        .wizard-icon { font-size: 48px; margin-bottom: 16px; }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-fredoka font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">SciQuest Heroes</a>
-            <a href="student-dashboard.html" class="font-semibold text-slate-700">My Dashboard</a>
+            <a href="student-dashboard.html" class="font-semibold text-slate-700 hover:text-purple-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>My Dashboard
+            </a>
         </div>
     </nav>
+
     <div class="container">
         <div class="page-header">
-            <h1 class="font-fredoka text-5xl font-black text-slate-800 mb-4">Start</h1>
-            <p class="text-xl text-slate-600 font-bold">This is a placeholder page. Real content coming soon!</p>
+            <div class="wizard-icon">✨</div>
+            <h1 class="font-fredoka text-5xl font-black text-slate-800 mb-4">Create Your Adventure</h1>
+            <p class="text-xl text-slate-600 font-bold">Choose your guide, pick a topic, and let's create an amazing science comic just for you!</p>
         </div>
-        <div class="card text-center">
-            <div class="text-6xl mb-4">✨</div>
-            <p class="text-slate-700 text-lg">Start content will appear here.</p>
+
+        <div class="card">
+            <form id="storyWizardForm">
+                <div class="form-group">
+                    <label class="form-label" for="avatarSelect">
+                        <i class="fas fa-user-circle text-purple-600 mr-2"></i>Choose Your Avatar
+                    </label>
+                    <select class="form-select" id="avatarSelect" required>
+                        <option value="">Select your avatar...</option>
+                        <option value="stella">Stella - The Space Explorer</option>
+                        <option value="max">Max - The Curious Scientist</option>
+                        <option value="ruby">Ruby - The Nature Lover</option>
+                        <option value="leo">Leo - The Adventure Seeker</option>
+                        <option value="finn">Finn - The Ocean Explorer</option>
+                    </select>
+                    <div class="helper-text">Your avatar will join you on this learning adventure!</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="guideSelect">
+                        <i class="fas fa-user-tie text-blue-600 mr-2"></i>Choose Your Guide
+                    </label>
+                    <select class="form-select" id="guideSelect" required>
+                        <option value="">Select a guide...</option>
+                        <option value="mr-chloro">Mr. Chloro - Plant Expert</option>
+                        <option value="stella-guide">Stella - Space Guide</option>
+                        <option value="rex">Rex - Dinosaur Expert</option>
+                        <option value="echo">Echo - Sound & Music Teacher</option>
+                    </select>
+                    <div class="helper-text">Your guide will teach you amazing science facts!</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="topicSelect">
+                        <i class="fas fa-book text-green-600 mr-2"></i>Choose a Topic
+                    </label>
+                    <select class="form-select" id="topicSelect" required>
+                        <option value="">Select a topic...</option>
+                        <option value="photosynthesis">Photosynthesis - How Plants Make Food</option>
+                        <option value="space">Solar System - Journey Through Space</option>
+                        <option value="dinosaurs">Dinosaurs - Ancient Creatures</option>
+                    </select>
+                    <div class="helper-text">What do you want to learn about today?</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="gradeSelect">
+                        <i class="fas fa-graduation-cap text-yellow-600 mr-2"></i>Your Grade Level
+                    </label>
+                    <select class="form-select" id="gradeSelect" required>
+                        <option value="">Select your grade...</option>
+                        <option value="K-2">K-2 (Ages 5-7)</option>
+                        <option value="3-5">3-5 (Ages 8-10)</option>
+                        <option value="6-8">6-8 (Ages 11-13)</option>
+                    </select>
+                    <div class="helper-text">We'll make the story perfect for your age!</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="languageSelect">
+                        <i class="fas fa-globe text-pink-600 mr-2"></i>Language
+                    </label>
+                    <select class="form-select" id="languageSelect" required>
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-generate" id="generateBtn">
+                    <i class="fas fa-magic mr-3"></i>Generate My Comic
+                </button>
+            </form>
+
+            <div class="loading-state" id="loadingState">
+                <div class="spinner"></div>
+                <h3 class="font-fredoka text-2xl font-bold text-slate-800 mb-2">Creating Your Comic Adventure...</h3>
+                <p class="text-slate-600 font-semibold">Our AI is drawing panels and writing your story!</p>
+            </div>
         </div>
     </div>
+
+    <script type="module">
+        import { generateStory } from './mock-story-service.js';
+
+        const form = document.getElementById('storyWizardForm');
+        const loadingState = document.getElementById('loadingState');
+        const generateBtn = document.getElementById('generateBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const params = {
+                childId: 'current-child',
+                avatarId: document.getElementById('avatarSelect').value,
+                guideId: document.getElementById('guideSelect').value,
+                topicId: document.getElementById('topicSelect').value,
+                grade: document.getElementById('gradeSelect').value,
+                language: document.getElementById('languageSelect').value
+            };
+
+            form.style.display = 'none';
+            loadingState.classList.add('active');
+            generateBtn.disabled = true;
+
+            try {
+                const story = await generateStory(params);
+                window.location.href = `child-story.html?id=${story.id}`;
+            } catch (error) {
+                console.error('Error generating story:', error);
+                alert('Oops! Something went wrong. Please try again.');
+                form.style.display = 'block';
+                loadingState.classList.remove('active');
+                generateBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>

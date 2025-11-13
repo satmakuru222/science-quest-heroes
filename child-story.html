@@ -5,29 +5,215 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Story Reader - SciQuest Heroes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; }
         .font-fredoka { font-family: 'Fredoka', sans-serif; }
-        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 20px 0; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
-        .card { background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 32px; }
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 20px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+        .card { background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 32px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin-bottom: 24px; }
+        .loading-card { text-align: center; padding: 60px 20px; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #e2e8f0; border-top-color: #22c55e; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .progress-bar-container { width: 100%; height: 12px; background: rgba(255, 255, 255, 0.5); border-radius: 12px; overflow: hidden; margin-bottom: 16px; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #3b82f6); transition: width 0.3s ease; border-radius: 12px; }
+        .progress-text { text-align: center; font-weight: 700; color: #1e293b; margin-bottom: 24px; font-size: 16px; }
+        .panel-image { width: 100%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+        .panel-caption { font-size: 18px; line-height: 1.7; color: #1e293b; font-weight: 600; text-align: center; }
+        .nav-controls { display: flex; gap: 16px; margin-top: 32px; }
+        .btn-nav { flex: 1; padding: 14px 24px; border-radius: 16px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-prev { background: rgba(255, 255, 255, 0.8); color: #1e293b; border: 2px solid #e2e8f0; }
+        .btn-prev:hover:not(:disabled) { background: white; border-color: #22c55e; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-next { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3); }
+        .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+        .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .action-btn { padding: 16px 24px; border-radius: 16px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+        .action-quiz { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; }
+        .action-quiz:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4); }
+        .action-pdf { background: rgba(255, 255, 255, 0.8); color: #1e293b; border: 2px solid #e2e8f0; }
+        .action-pdf:hover { background: white; border-color: #3b82f6; transform: translateY(-2px); }
+        .action-chat { background: linear-gradient(135deg, #ec4899, #db2777); color: white; }
+        .action-chat:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4); }
+        .empty-state { text-align: center; padding: 60px 20px; }
+        .empty-icon { font-size: 80px; color: #cbd5e1; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-fredoka font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">SciQuest Heroes</a>
-            <a href="student-dashboard.html" class="font-semibold text-slate-700">← Back</a>
+            <a href="student-dashboard.html" class="font-semibold text-slate-700 hover:text-purple-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
         </div>
     </nav>
+
     <div class="container">
-        <div class="card text-center">
-            <h1 class="font-fredoka text-4xl font-black text-slate-800 mb-4">Story Reader</h1>
-            <div class="text-8xl mb-6">📖</div>
-            <p class="text-slate-700 text-lg">Comic reader will appear here (story/:storyId route)</p>
+        <div id="loadingState" class="card loading-card">
+            <div class="spinner"></div>
+            <h2 class="font-fredoka text-2xl font-bold text-slate-800 mb-2">Loading Your Adventure...</h2>
+            <p class="text-slate-600 font-semibold">Getting your comic ready!</p>
+        </div>
+
+        <div id="errorState" class="card" style="display: none;">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h2 class="font-fredoka text-3xl font-bold text-slate-800 mb-3">Adventure Not Found</h2>
+                <p class="text-slate-600 text-lg mb-6">We couldn't find this adventure. Try generating a new story!</p>
+                <a href="child-start.html" class="action-btn action-quiz" style="display: inline-flex; max-width: 300px; margin: 0 auto;">
+                    <i class="fas fa-plus-circle"></i>
+                    Create New Adventure
+                </a>
+            </div>
+        </div>
+
+        <div id="storyContent" style="display: none;">
+            <div class="card">
+                <h1 class="font-fredoka text-4xl font-black text-slate-800 mb-3 text-center" id="storyTitle">Loading...</h1>
+
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text" id="progressText">Panel 1 of 8</div>
+
+                <div id="panelContainer">
+                    <img src="" alt="" class="panel-image" id="panelImage">
+                    <p class="panel-caption" id="panelCaption">Loading panel...</p>
+                </div>
+
+                <div class="nav-controls">
+                    <button class="btn-nav btn-prev" id="prevBtn" disabled>
+                        <i class="fas fa-arrow-left"></i>
+                        Previous
+                    </button>
+                    <button class="btn-nav btn-next" id="nextBtn">
+                        Next
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="font-fredoka text-2xl font-bold text-slate-800 mb-4">What's Next?</h2>
+                <div class="actions-grid">
+                    <a href="#" class="action-btn action-quiz" id="quizBtn">
+                        <i class="fas fa-question-circle"></i>
+                        Take Quiz
+                    </a>
+                    <button class="action-btn action-pdf" onclick="alert('PDF download coming soon!')">
+                        <i class="fas fa-file-pdf"></i>
+                        Download PDF
+                    </button>
+                    <a href="#" class="action-btn action-chat" id="chatBtn">
+                        <i class="fas fa-comments"></i>
+                        Ask in Chat
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script type="module">
+        import { getStoryById } from './mock-story-service.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('id');
+
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const storyContent = document.getElementById('storyContent');
+        const storyTitle = document.getElementById('storyTitle');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressText = document.getElementById('progressText');
+        const panelImage = document.getElementById('panelImage');
+        const panelCaption = document.getElementById('panelCaption');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const quizBtn = document.getElementById('quizBtn');
+        const chatBtn = document.getElementById('chatBtn');
+
+        let currentStory = null;
+        let currentPanelIndex = 0;
+
+        async function loadStory() {
+            if (!storyId) {
+                showError();
+                return;
+            }
+
+            try {
+                const story = await getStoryById(storyId);
+
+                if (!story) {
+                    showError();
+                    return;
+                }
+
+                currentStory = story;
+                loadingState.style.display = 'none';
+                storyContent.style.display = 'block';
+
+                storyTitle.textContent = story.title;
+                quizBtn.href = `child-quiz.html?id=${storyId}`;
+                chatBtn.href = `child-chat.html?storyId=${storyId}`;
+
+                displayPanel(0);
+            } catch (error) {
+                console.error('Error loading story:', error);
+                showError();
+            }
+        }
+
+        function displayPanel(index) {
+            if (!currentStory || !currentStory.panels[index]) return;
+
+            currentPanelIndex = index;
+            const panel = currentStory.panels[index];
+            const totalPanels = currentStory.panels.length;
+
+            panelImage.src = panel.imageUrl;
+            panelImage.alt = `Panel ${panel.panelNumber} of ${currentStory.title}`;
+            panelCaption.textContent = panel.caption;
+
+            const progress = ((index + 1) / totalPanels) * 100;
+            progressBarFill.style.width = `${progress}%`;
+            progressText.textContent = `Panel ${index + 1} of ${totalPanels}`;
+
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalPanels - 1;
+        }
+
+        function showError() {
+            loadingState.style.display = 'none';
+            errorState.style.display = 'block';
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPanelIndex > 0) {
+                displayPanel(currentPanelIndex - 1);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStory && currentPanelIndex < currentStory.panels.length - 1) {
+                displayPanel(currentPanelIndex + 1);
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && !prevBtn.disabled) {
+                prevBtn.click();
+            } else if (e.key === 'ArrowRight' && !nextBtn.disabled) {
+                nextBtn.click();
+            }
+        });
+
+        loadStory();
+    </script>
 </body>
 </html>

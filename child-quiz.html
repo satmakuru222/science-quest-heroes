@@ -3,31 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz - SciQuest Heroes</title>
+    <title>Quiz Time - SciQuest Heroes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); min-height: 100vh; }
         .font-fredoka { font-family: 'Fredoka', sans-serif; }
-        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 20px 0; }
-        .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
-        .card { background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 32px; }
+        .navbar { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); padding: 20px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 24px; }
+        .card { background: rgba(255, 255, 255, 0.9); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 24px; padding: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); margin-bottom: 24px; }
+        .page-header { text-align: center; margin-bottom: 32px; }
+        .quiz-icon { font-size: 64px; margin-bottom: 16px; }
+        .loading-card { text-align: center; padding: 60px 20px; }
+        .spinner { width: 60px; height: 60px; border: 6px solid #e2e8f0; border-top-color: #22c55e; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .question-card { margin-bottom: 32px; }
+        .question-number { font-weight: 700; color: #3b82f6; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 20px; line-height: 1.5; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { padding: 16px 20px; border-radius: 12px; font-size: 16px; font-weight: 600; color: #1e293b; background: white; border: 2px solid #e2e8f0; cursor: pointer; transition: all 0.3s ease; text-align: left; }
+        .option-btn:hover { border-color: #22c55e; transform: translateX(4px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .option-btn.selected { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .option-btn.correct { border-color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+        .option-btn.incorrect { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .submit-btn { background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 60px; padding: 18px 48px; font-weight: 800; font-size: 18px; color: #1e293b; box-shadow: 0 8px 0 #92400e, 0 12px 30px rgba(0,0,0,0.3); transition: all 0.2s ease; cursor: pointer; font-family: 'Fredoka', sans-serif; text-transform: uppercase; letter-spacing: 1px; border: none; width: 100%; }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 11px 0 #92400e, 0 15px 35px rgba(0,0,0,0.4); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .results-card { text-align: center; }
+        .score-display { font-size: 72px; font-weight: 900; margin: 20px 0; }
+        .score-excellent { color: #22c55e; }
+        .score-good { color: #fbbf24; }
+        .score-needs-practice { color: #f59e0b; }
+        .badge-earned { background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 20px; padding: 20px; margin: 24px 0; display: inline-block; }
+        .badge-icon { font-size: 48px; margin-bottom: 8px; }
+        .action-buttons { display: flex; gap: 16px; margin-top: 32px; flex-wrap: wrap; }
+        .btn-action { flex: 1; min-width: 150px; padding: 14px 24px; border-radius: 16px; font-weight: 700; font-size: 16px; border: none; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-retry { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .btn-retry:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); }
+        .btn-back { background: rgba(255, 255, 255, 0.8); color: #1e293b; border: 2px solid #e2e8f0; }
+        .btn-back:hover { background: white; border-color: #22c55e; transform: translateY(-2px); }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-fredoka font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">SciQuest Heroes</a>
-            <a href="student-dashboard.html" class="font-semibold text-slate-700">← Back</a>
+            <a href="student-dashboard.html" class="font-semibold text-slate-700 hover:text-purple-600 transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+            </a>
         </div>
     </nav>
+
     <div class="container">
-        <div class="card text-center">
-            <h1 class="font-fredoka text-4xl font-black text-slate-800 mb-4">Quiz Time!</h1>
-            <div class="text-8xl mb-6">❓</div>
-            <p class="text-slate-700 text-lg">Quiz runner will appear here (quiz/:storyId route)</p>
+        <div id="loadingState" class="card loading-card">
+            <div class="spinner"></div>
+            <h2 class="font-fredoka text-2xl font-bold text-slate-800 mb-2">Loading Quiz...</h2>
+            <p class="text-slate-600 font-semibold">Getting your questions ready!</p>
+        </div>
+
+        <div id="quizContent" style="display: none;">
+            <div class="page-header">
+                <div class="quiz-icon">❓</div>
+                <h1 class="font-fredoka text-5xl font-black text-slate-800 mb-3" id="quizTitle">Quiz Time!</h1>
+                <p class="text-slate-600 font-bold text-lg">Test what you learned from the story!</p>
+            </div>
+
+            <div class="card">
+                <div id="questionsContainer"></div>
+                <button class="submit-btn" id="submitBtn">
+                    <i class="fas fa-check-circle"></i>
+                    Submit Answers
+                </button>
+            </div>
+        </div>
+
+        <div id="resultsContent" style="display: none;">
+            <div class="card results-card">
+                <h2 class="font-fredoka text-4xl font-black text-slate-800 mb-4">Quiz Complete!</h2>
+
+                <div class="score-display" id="scoreDisplay">0%</div>
+                <p class="text-2xl font-bold text-slate-700 mb-4" id="scoreMessage">Great job!</p>
+
+                <div id="badgeContainer" style="display: none;">
+                    <div class="badge-earned">
+                        <div class="badge-icon">🎉</div>
+                        <div class="font-fredoka text-2xl font-bold text-slate-800">Badge Unlocked!</div>
+                        <div class="text-lg font-semibold text-slate-700" id="badgeName">Curious Mind</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-action btn-retry" id="retryBtn">
+                        <i class="fas fa-redo"></i>
+                        Try Again
+                    </button>
+                    <a href="#" class="btn-action btn-back" id="backToStoryBtn">
+                        <i class="fas fa-book"></i>
+                        Back to Story
+                    </a>
+                    <a href="student-dashboard.html" class="btn-action btn-back">
+                        <i class="fas fa-home"></i>
+                        Dashboard
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script type="module">
+        import { getQuizForStory } from './mock-quiz-service.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const storyId = urlParams.get('id');
+
+        const loadingState = document.getElementById('loadingState');
+        const quizContent = document.getElementById('quizContent');
+        const resultsContent = document.getElementById('resultsContent');
+        const quizTitle = document.getElementById('quizTitle');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreMessage = document.getElementById('scoreMessage');
+        const badgeContainer = document.getElementById('badgeContainer');
+        const badgeName = document.getElementById('badgeName');
+        const retryBtn = document.getElementById('retryBtn');
+        const backToStoryBtn = document.getElementById('backToStoryBtn');
+
+        let currentQuiz = null;
+        let userAnswers = {};
+
+        async function loadQuiz() {
+            if (!storyId) {
+                alert('No story ID provided');
+                window.location.href = 'child-start.html';
+                return;
+            }
+
+            try {
+                const quiz = await getQuizForStory(storyId);
+                currentQuiz = quiz;
+
+                quizTitle.textContent = `${quiz.title}`;
+                backToStoryBtn.href = `child-story.html?id=${storyId}`;
+
+                renderQuestions();
+
+                loadingState.style.display = 'none';
+                quizContent.style.display = 'block';
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                alert('Failed to load quiz. Please try again.');
+                window.location.href = 'child-start.html';
+            }
+        }
+
+        function renderQuestions() {
+            questionsContainer.innerHTML = '';
+
+            currentQuiz.questions.forEach((question, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.innerHTML = `
+                    <div class="question-number">Question ${index + 1} of ${currentQuiz.questions.length}</div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options-list" data-question-id="${question.id}">
+                        ${question.options.map((option, optIndex) => `
+                            <button class="option-btn" data-question-id="${question.id}" data-option-index="${optIndex}">
+                                ${String.fromCharCode(65 + optIndex)}. ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionCard);
+            });
+
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', handleOptionClick);
+            });
+        }
+
+        function handleOptionClick(e) {
+            const questionId = e.target.dataset.questionId;
+            const optionIndex = parseInt(e.target.dataset.optionIndex);
+
+            document.querySelectorAll(`[data-question-id="${questionId}"]`).forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            e.target.classList.add('selected');
+            userAnswers[questionId] = optionIndex;
+
+            submitBtn.disabled = Object.keys(userAnswers).length !== currentQuiz.questions.length;
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            let total = currentQuiz.questions.length;
+
+            currentQuiz.questions.forEach(question => {
+                if (userAnswers[question.id] === question.correctIndex) {
+                    correct++;
+                }
+            });
+
+            return Math.round((correct / total) * 100);
+        }
+
+        function showResults() {
+            const score = calculateScore();
+
+            scoreDisplay.textContent = `${score}%`;
+
+            if (score >= 90) {
+                scoreDisplay.className = 'score-display score-excellent';
+                scoreMessage.textContent = 'Outstanding! You really know your science!';
+            } else if (score >= 70) {
+                scoreDisplay.className = 'score-display score-good';
+                scoreMessage.textContent = 'Great job! You learned a lot!';
+            } else {
+                scoreDisplay.className = 'score-display score-needs-practice';
+                scoreMessage.textContent = 'Good effort! Try reading the story again!';
+            }
+
+            if (score >= 70) {
+                badgeContainer.style.display = 'block';
+                badgeName.textContent = score >= 90 ? 'Science Master' : 'Curious Mind';
+            }
+
+            quizContent.style.display = 'none';
+            resultsContent.style.display = 'block';
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            submitBtn.disabled = true;
+            resultsContent.style.display = 'none';
+            quizContent.style.display = 'block';
+            renderQuestions();
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        retryBtn.addEventListener('click', resetQuiz);
+
+        submitBtn.disabled = true;
+        loadQuiz();
+    </script>
 </body>
 </html>

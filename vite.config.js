@@ -21,7 +21,10 @@ export default defineConfig({
         mrChloroGuide: resolve(__dirname, 'mr-chloro-guide.html'),
         stellaGradeSelector: resolve(__dirname, 'stella-grade-selector.html'),
         stellaPhotosynthesisAdventure: resolve(__dirname, 'stella-photosynthesis-adventure.html'),
-        stellaSpaceGuide: resolve(__dirname, 'stella-space-guide.html')
+        stellaSpaceGuide: resolve(__dirname, 'stella-space-guide.html'),
+        childStart: resolve(__dirname, 'child-start.html'),
+        childStory: resolve(__dirname, 'child-story.html'),
+        childQuiz: resolve(__dirname, 'child-quiz.html')
       }
     }
   },
