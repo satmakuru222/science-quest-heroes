@@ -33,22 +33,26 @@
     <div class="container">
         <div class="page-header">
             <h1 class="font-fredoka text-5xl font-black text-slate-800 mb-4">My Children</h1>
-            <p class="text-xl text-slate-600 font-semibold">Manage your children's profiles (placeholder - logic to be added)</p>
+            <p class="text-xl text-slate-600 font-semibold">Manage and track your children's learning progress</p>
         </div>
-        <div class="children-grid">
-            <div class="card">
-                <div class="text-6xl mb-4">👧</div>
-                <h3 class="font-fredoka text-2xl font-black mb-2">Emma</h3>
-                <p class="text-slate-600 mb-4">Grade 3</p>
-                <a href="parent-child-detail.html" class="block text-center py-3 bg-purple-100 text-purple-700 rounded-full font-bold hover:bg-purple-200">View Details →</a>
-            </div>
-            <div class="card">
-                <div class="text-6xl mb-4">👦</div>
-                <h3 class="font-fredoka text-2xl font-black mb-2">Noah</h3>
-                <p class="text-slate-600 mb-4">Grade 5</p>
-                <a href="parent-child-detail.html" class="block text-center py-3 bg-purple-100 text-purple-700 rounded-full font-bold hover:bg-purple-200">View Details →</a>
-            </div>
+
+        <div id="loadingMessage" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <p class="mt-4 text-slate-600 font-bold">Loading children...</p>
         </div>
+
+        <div id="noChildrenMessage" style="display: none;" class="card text-center py-12">
+            <div class="text-6xl mb-4">👨‍👩‍👧‍👦</div>
+            <h3 class="font-fredoka text-2xl font-black mb-2 text-slate-800">No Children Added Yet</h3>
+            <p class="text-slate-600 mb-6">You haven't added any children to your account yet. Children can sign up using your email address during their registration.</p>
+            <a href="student-signup.html" class="inline-block py-3 px-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full font-bold hover:from-purple-600 hover:to-pink-600 transition-all">
+                Create Student Account
+            </a>
+        </div>
+
+        <div class="children-grid" id="childrenGrid"></div>
     </div>
+
+    <script type="module" src="parent-children.js"></script>
 </body>
 </html>
