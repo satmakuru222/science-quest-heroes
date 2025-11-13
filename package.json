@@ -1,0 +1,27 @@
+{
+  "name": "sciquest-heroes",
+  "version": "1.0.0",
+  "description": "AI-powered storytelling platform that turns science into personalized voice-narrated comics for kids",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "keywords": [
+    "education",
+    "science",
+    "kids",
+    "storytelling",
+    "ai"
+  ],
+  "author": "SciQuest Heroes",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3"
+  }
+}
